@@ -19,7 +19,7 @@ Everything you send with your USB-device will be broadcasted to the Clients, whi
 
 ## Links
 
-* https://code.tutsplus.com/tutorials/introduction-to-web-midi--cms-25220
+* <a href="https://code.tutsplus.com/tutorials/introduction-to-web-midi--cms-25220" target="_blank">https://code.tutsplus.com/tutorials/introduction-to-web-midi--cms-25220</a>
    Tutorial Midi Device in HTML5
 
 
