@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Websocket MIDI</title>
+
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+
+<script>
+    const connection = new WebSocket('ws://localhost:9000');
+
+    connection.onopen = function () {
+        connection.send('BROADCASTER CONNECTED');
+    };
+
+    // Log errors
+    connection.onerror = function (error) {
+        console.log('WebSocket Error ' + error);
+    };
+
+    // Log messages from the server
+    connection.onmessage = function (e) {
+        console.log('Server: ' + e.data);
+    };
+
+    $( document ).ready(function() {
+
+
+        let context = new AudioContext(),
+            oscillators = {};
+
+        if (navigator.requestMIDIAccess) {
+            navigator.requestMIDIAccess()
+                .then(success, failure);
+        }
+
+        function success (midi) {
+            let inputs = midi.inputs.values();
+            // inputs is an Iterator
+
+            for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+                // each time there is a midi message call the onMIDIMessage function
+                input.value.onmidimessage = onMIDIMessage;
+            }
+        }
+
+        function failure () {
+            console.error('No access to your midi devices.')
+        }
+
+        function onMIDIMessage (message) {
+            console.log("DATA FROM MIDI-DEVICE", message.data[0], message.data[1], message.data[2]);
+            connection.send(message.data[1]);
+
+            console.log("MESSAGE SENT: ", message.data[1]);
+
+            let frequency = midiNoteToFrequency(message.data[1]);
+
+            if (message.data[0] === 144 && message.data[2] > 0) {
+                playNote(frequency);
+            }
+
+            if (message.data[0] === 128 || message.data[2] === 0) {
+                stopNote(frequency);
+            }
+        }
+
+        function midiNoteToFrequency (note) {
+            return Math.pow(2, ((note - 69) / 12)) * 440;
+        }
+
+        function playNote (frequency) {
+            oscillators[frequency] = context.createOscillator();
+            oscillators[frequency].frequency.value = frequency;
+            oscillators[frequency].connect(context.destination);
+            oscillators[frequency].start(context.currentTime);
+        }
+
+        function stopNote (frequency) {
+            oscillators[frequency].stop(context.currentTime);
+            oscillators[frequency].disconnect();
+        }
+
+
+
+        // CLICK HANDLER
+        $('#ws-sendbutton').click(()=>{
+            connection.send($('#ws-message').val());
+            $('#ws-message').val('');
+        });
+    });
+
+</script>
+
+<input type="text" id="ws-message" value=""> <button id="ws-sendbutton">SEND</button>
+
+</body>
+</html>
