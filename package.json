@@ -1,0 +1,29 @@
+{
+  "name": "midi-websocket",
+  "version": "0.0.1",
+  "description": "Sending midi through websocket",
+  "main": "server/src/index.js",
+  "scripts": {
+    "start": "echo Starting Server ... && node server/src/index.js",
+    "test": "test",
+    "startserver": "echo Starting Server ... && node server/src/index.js",
+    "startclient": "echo Starting Client ..."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fa-m/midi-websocket.git"
+  },
+  "keywords": [
+    "websocket",
+    "midi"
+  ],
+  "author": "fmalik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fa-m/midi-websocket/issues"
+  },
+  "homepage": "https://github.com/fa-m/midi-websocket#readme",
+  "dependencies": {
+    "ws": "^5.2.0"
+  }
+}
