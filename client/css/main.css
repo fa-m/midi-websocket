@@ -1,0 +1,14 @@
+section {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.whiteButton {
+    width: 50px;
+    border: 1px solid black;
+    height: 200px;
+    float: left;
+    text-align: center;
+}
